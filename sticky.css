@@ -77,6 +77,7 @@ img.sticky-close {
 .border-top-center {
 	border-top:1px solid #999;
 }
-.border-bottom-right, .border-bottom-left, {
+.border-bottom-right,
+.border-bottom-left {
  border-bottom:1px solid #999;
 }
