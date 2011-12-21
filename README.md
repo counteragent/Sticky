@@ -11,49 +11,52 @@ Usage
 
 Include the files in your document's header:
 
-    <script type="text/javascript" src="sticky.js"></script>
-    <link rel="stylesheet" type="text/css" href="sticky.css" />
+```html
+<script type="text/javascript" src="sticky.js"></script>
+<link rel="stylesheet" type="text/css" href="sticky.css" />
+```
 
 Basic Usage
 
-    javascript
-    $.sticky('This is a Sticky Note!');
+```javascript
+$.sticky('This is a Sticky Note!');
+```
 
 Advanced Options
 
-    javascript
-    $.sticky('This is a very special Sticky Note!',{speed:1500,position:'top-center',autoclose:false});
-
+```javascript
+$.sticky('This is a very special Sticky Note!',{speed:1500,position:'top-center',autoclose:false});
+```
 
 Change the `close.png` Image Path
 
-    javascript
-    $.sticky('Note with a custom image path for the close button!',{imagePath:'../../images'});
-    // leave off the trailing slash of your images folder
-
+```javascript
+$.sticky('Note with a custom image path for the close button!',{imagePath:'../../images'});
+// leave off the trailing slash of your images folder
+```
 
 Authors
 -------
 
 **Original Author: Daniel Raftery**
 
++ http://thrivingkings.com
 + http://twitter.com/thrivekings
 + http://github.com/thrivekings
-+ http://thrivingkings.com
 
 **Branched Author: Jonathan Brimer**
 
++ http://beoriginal.com
 + http://twitter.com/counteragent
 + http://github.com/counteragent
-+ http://beoriginal.com
 
 Browser compatibility
 ---------------------
 
-- Chrome 8.0+
-- Firefox 3.0+
-- Safari 4.0+
-- Internet Explorer 7.0+
++ Chrome 8.0+
++ Firefox 3.0+
++ Safari 4.0+
++ Internet Explorer 7.0+
 
 License
 ---------------------
