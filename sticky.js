@@ -1,15 +1,17 @@
-// Sticky v1.0 by Daniel Raftery
-// http://thrivingkings.com/sticky
-//
-// http://twitter.com/ThrivingKings
-
 /*
-Branched by CounterAgent (Jonathan Brimer)
-https://github.com/counteragent/Sticky
-Sticky v2.0
-December 21, 2011
-http://beoriginal.com
-http://twitter.com/CounterAgent
+Sticky - Simple Event Notification
+Version: 2.0
+Author: CounterAgent (Jonathan Brimer)
+Created: December 21, 2011
+Project URL: https://github.com/counteragent/Sticky
+Author URL: http://beoriginal.com
+Author Twitter: http://twitter.com/CounterAgent
+
+Forked from:
+Sticky v1.0 by Daniel Raftery
+https://github.com/ThrivingKings/Sticky
+http://thrivingkings.com/sticky
+http://twitter.com/ThrivingKings
 */
 
 (function($){
@@ -23,42 +25,38 @@ http://twitter.com/CounterAgent
 		
 		// Default settings
 		var settings = {
-			'speed'			:	'fast',	// animations: fast, slow, or integer
-			'duplicates'	:	true, // true or false
-			'autoclose'		:	5000, // integer or false
-			'imagePath'		:	'', // images path
-			'position'		:	'top-left' // top-left, top-right, bottom-left, or bottom-right, top-center
+			'speed'			:	'fast',	// animation slide speed: fast, slow, or integer
+			'duplicates'	:	true, // whether to allow duplicate notes or not: true or false
+			'autoClose'		:	5000, // will a note stay open or close by itself, and how fast: integer or false
+			'imagePath'		:	'', // path to the folder for the 'close.png', leave off the trailing slash (if no path is specified a div tag will be used instead of an img tag)
+			'position'		:	'top-right' // where to diplay the note: top-left, top-right, bottom-left, or bottom-right, top-center
 		};
 		
 		// NOTE! position only works on the first sticky called on a page
 		// if you specify another position after setting and calling a sticky it will use the initially defined position
 		
-		var closer = function(){
-			$('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
-		};
-		
 		// Passing in the object instead of specifying a note
-		if(!note){
-			note = this.html();
-		}
+		if(!note) note = this.html();
 		
-		if(options){
-			$.extend(settings, options);
-		}
-		
-		var position = settings.position;
+		if(options) $.extend(settings, options);
 		
 		// Variables
 		var display = true;
-		var duplicate = 'no';
+		var sped = settings.speed;
+		var dup = 'no';
+		var closeit = settings.autoClose;
+		var path = settings.imagePath;
+		var pos = settings.position;
+		var uniqID = 'sticky-' + Math.floor(Math.random()*99999); // Somewhat of a unique ID
 		
-		// Somewhat of a unique ID
-		var uniqID = 'sticky-' + Math.floor(Math.random()*99999);
+		var closer = function(){
+			$('#' + $(this).attr('rel')).dequeue().fadeOut(sped);
+		};
 		
 		// Handling duplicate notes and IDs
 		$('.sticky-note').each(function(){
 			if($(this).html() == note && $(this).is(':visible')){
-				duplicate = 'yes';
+				dup = 'yes';
 				if(!settings.duplicates){
 					display = false;
 				}
@@ -70,53 +68,57 @@ http://twitter.com/CounterAgent
 		
 		// Make sure the sticky queue exists
 		if(!$('body').find('.sticky-queue').html()){
-			$('body').append('<div class="sticky-queue ' + position + '"></div>');
+			$('body').append('<div class="sticky-queue ' + pos + '"></div>');
 		}
 		
-		if(settings.position == 'top-center')
-		$('.top-center').css({left:'50%',margin:'0 0 0 -'+($('.top-center').width() / 2)+'px'});
+		// if position is set to center calculate the position
+		if(pos == 'top-center'){
+			$('.top-center').css({left:'50%',margin:'0 0 0 -'+($('.top-center').width() / 2)+'px'});
+		}
 		
-		// Can it be displayed?
+		// Can the note be displayed?
 		if(display){
 			// Building and inserting sticky note
-			$('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
+			$('.sticky-queue').prepend('<div class="sticky border-' + pos + '" id="' + uniqID + '"></div>');
 			
 			// if the imagePath is specified use that, otherwise just use a DIV with the .sticky-close class
-			if(settings.imagePath){
-				$('#' + uniqID).append('<img src="' + settings.imagePath + '/close.png" class="sticky-close" rel="' + uniqID + '" title="Close" />');
+			if(path){
+				$('#' + uniqID).append('<img src="' + path + '/close.png" class="sticky-close" rel="' + uniqID + '" title="Close" />');
 			} else {
 				$('#' + uniqID).append('<div class="sticky-close" rel="' + uniqID + '" title="Close">');
 			}
 			
 			$('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
-		
+			
 			// Smoother animation
 			var height = $('#' + uniqID).height();
 			$('#' + uniqID).css('height', height);
 			
-			$('#' + uniqID).slideDown(settings.speed);
+			// slide the new note down into position
+			$('#' + uniqID).slideDown(sped);
 			display = true;
 		}
 		
 		// Listeners
 		$('.sticky').ready(function(){
-			// If 'autoclose' is enabled, set a timer to close the sticky
-			if(settings.autoclose){
-				$('#' + uniqID).delay(settings.autoclose).fadeOut(settings.speed);
+			// If 'autoClose' is enabled, set a timer to close the sticky
+			if(closeit){
+				$('#' + uniqID).delay(closeit).fadeOut(sped);
 			}
 		});
+		
 		// Closing a sticky
 		$('.sticky-close').click(closer);
 		
 		// Callback data
 		var response = {
 			'id'		:	uniqID,
-			'duplicate'	:	duplicate,
+			'duplicate'	:	dup,
 			'displayed'	: 	display,
 			'position'	:	position
 		}
 		
-		// Callback function?
+		// Callback function
 		if(callback){
 			callback(response);
 		} else {
